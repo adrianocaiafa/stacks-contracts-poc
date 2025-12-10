@@ -104,7 +104,21 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna os pontos do usuario atual
+(define-read-only (my-points)
+    (ok (match (map-get? points tx-sender) pts
+        pts
+        u0
+    ))
+)
+
+;; @notice Retorna quantas vezes o usuario atual interagiu
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count
+        count
+        u0
+    ))
+)
 
 ;; private functions
 ;;
