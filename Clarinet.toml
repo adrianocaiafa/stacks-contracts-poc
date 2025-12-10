@@ -9,6 +9,11 @@ requirements = []
 path = 'contracts/simple-message.clar'
 clarity_version = 4
 epoch = 'latest'
+
+[contracts.simple-points]
+path = 'contracts/simple-points.clar'
+clarity_version = 4
+epoch = 'latest'
 [repl.analysis]
 passes = ['check_checker']
 
