@@ -61,6 +61,48 @@
     )
 )
 
+;; @notice Envia pontos para outra wallet
+(define-public (give-points (to principal) (amount uint))
+    (begin
+        (asserts! (> amount u0) (err u1))
+        (let ((sender tx-sender))
+            (begin
+                ;; Verifica se tem pontos suficientes
+                (let ((sender-points (match (map-get? points sender) pts
+                    pts
+                    u0
+                )))
+                    (asserts! (>= sender-points amount) (err u2))
+                    ;; Contagem de interacoes / usuarios unicos
+                    (match (map-get? has-interacted sender) already-interacted
+                        true
+                        (begin
+                            (map-set has-interacted sender true)
+                            (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                        )
+                    )
+                    ;; Incrementa contador de interacoes
+                    (let ((current-count (match (map-get? interactions-count sender) count
+                        count
+                        u0
+                    )))
+                        (map-set interactions-count sender (+ current-count u1))
+                    )
+                    ;; Transfere pontos
+                    (map-set points sender (- sender-points amount))
+                    (let ((receiver-points (match (map-get? points to) pts
+                        pts
+                        u0
+                    )))
+                        (map-set points to (+ receiver-points amount))
+                    )
+                    (ok true)
+                )
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
