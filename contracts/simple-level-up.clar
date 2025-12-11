@@ -75,6 +75,8 @@
                                 (if (> new-level current-level)
                                     (begin
                                         (map-set level sender new-level)
+                                        ;; Atualiza leaderboard
+                                        (update-top5 sender new-level)
                                         (ok true)
                                     )
                                     (ok true)
