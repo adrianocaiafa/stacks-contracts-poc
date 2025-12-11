@@ -115,6 +115,45 @@
     ))
 )
 
+;; @notice Retorna o total de usuarios unicos
+(define-read-only (get-total-unique-users)
+    (ok (var-get total-unique-users))
+)
+
+;; @notice Retorna o XP de um usuario especifico
+(define-read-only (get-xp (user principal))
+    (ok (match (map-get? xp user) xp-amount
+        xp-amount
+        u0
+    ))
+)
+
+;; @notice Retorna o nivel de um usuario especifico
+(define-read-only (get-level (user principal))
+    (ok (match (map-get? level user) lvl
+        lvl
+        u0
+    ))
+)
+
+;; @notice Retorna o usuario na posicao do leaderboard (0-4)
+(define-read-only (get-top-level-user (position uint))
+    (ok (map-get? top-levels position))
+)
+
+;; @notice Retorna quantos usuarios estao no top 5
+(define-read-only (get-top-levels-count)
+    (ok (var-get top-levels-count))
+)
+
+;; @notice Verifica se um endereco esta no top 5
+(define-read-only (get-is-in-top5 (user principal))
+    (ok (match (map-get? is-in-top5 user) in-top5
+        in-top5
+        false
+    ))
+)
+
 ;; private functions
 ;; @notice Atualiza o leaderboard top 5 com o novo usuario
 (define-private (update-top5 (user principal) (user-level uint))
