@@ -5,6 +5,11 @@ authors = []
 telemetry = false
 cache_dir = './.cache'
 requirements = []
+[contracts.simple-level-up]
+path = 'contracts/simple-level-up.clar'
+clarity_version = 4
+epoch = 'latest'
+
 [contracts.simple-message]
 path = 'contracts/simple-message.clar'
 clarity_version = 4
