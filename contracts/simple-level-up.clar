@@ -38,7 +38,55 @@
 (define-map is-in-top5 principal bool)
 
 ;; public functions
-;;
+;; @notice Ganhe XP e suba de nivel automaticamente
+(define-public (gain-xp (amount uint))
+    (begin
+        (asserts! (> amount u0) (err u1))
+        (let ((sender tx-sender))
+            (begin
+                ;; Contar usuario unico uma vez
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                    )
+                )
+                ;; Incrementa contador de interacoes
+                (let ((current-count (match (map-get? interactions-count sender) count
+                    count
+                    u0
+                )))
+                    (map-set interactions-count sender (+ current-count u1))
+                )
+                ;; Adiciona XP
+                (let ((current-xp (match (map-get? xp sender) xp-amount
+                    xp-amount
+                    u0
+                )))
+                    (let ((new-xp (+ current-xp amount)))
+                        (map-set xp sender new-xp)
+                        ;; Calcula novo nivel
+                        (let ((new-level (/ new-xp XP_PER_LEVEL)))
+                            (let ((current-level (match (map-get? level sender) lvl
+                                lvl
+                                u0
+                            )))
+                                (if (> new-level current-level)
+                                    (begin
+                                        (map-set level sender new-level)
+                                        (ok true)
+                                    )
+                                    (ok true)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
 
 ;; read only functions
 ;;
