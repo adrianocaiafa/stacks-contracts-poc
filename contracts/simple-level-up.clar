@@ -91,7 +91,29 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna quantas vezes o usuario atual interagiu
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count
+        count
+        u0
+    ))
+)
+
+;; @notice Retorna o XP do usuario atual
+(define-read-only (my-xp)
+    (ok (match (map-get? xp tx-sender) xp-amount
+        xp-amount
+        u0
+    ))
+)
+
+;; @notice Retorna o nivel do usuario atual
+(define-read-only (my-level)
+    (ok (match (map-get? level tx-sender) lvl
+        lvl
+        u0
+    ))
+)
 
 ;; private functions
 ;; @notice Atualiza o leaderboard top 5 com o novo usuario
