@@ -30,6 +30,13 @@
 ;; Nivel de cada endereco
 (define-map level principal uint)
 
+;; Leaderboard dos 5 maiores niveis (indice 0-4)
+(define-map top-levels uint principal)
+;; Contador para saber quantos usuarios estao no top 5
+(define-data-var top-levels-count uint u0)
+;; Marca se um endereco esta no top 5
+(define-map is-in-top5 principal bool)
+
 ;; public functions
 ;;
 
