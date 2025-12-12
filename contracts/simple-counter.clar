@@ -87,8 +87,28 @@
 ;; @notice Reseta o contador para 0
 (define-public (reset)
     (begin
-        (var-set count u0)
-        (ok true)
+        (let ((sender tx-sender))
+            (begin
+                ;; Registro generico de interacao
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                    )
+                )
+                ;; Incrementa contador de interacoes
+                (let ((interaction-count (match (map-get? interactions-count sender) count
+                    count
+                    u0
+                )))
+                    (map-set interactions-count sender (+ interaction-count u1))
+                )
+                ;; Reseta contador global
+                (var-set count u0)
+                (ok true)
+            )
+        )
     )
 )
 
