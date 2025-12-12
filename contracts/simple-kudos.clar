@@ -20,7 +20,11 @@
 (define-data-var total-kudos uint u0)
 
 ;; data maps
-;;
+;; Marca se um endereco ja interagiu pelo menos 1 vez
+(define-map has-interacted principal bool)
+
+;; Quantas vezes cada endereco ja interagiu
+(define-map interactions-count principal uint)
 
 ;; public functions
 ;;
