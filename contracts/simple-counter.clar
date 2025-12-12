@@ -13,7 +13,8 @@
 ;;
 
 ;; data vars
-;;
+;; Contador global
+(define-data-var count uint u0)
 
 ;; data maps
 ;;
