@@ -55,6 +55,17 @@
     )
 )
 
+;; @notice Decrementa o contador em 1 (requer count > 0)
+(define-public (decrement)
+    (begin
+        (let ((current-count (var-get count)))
+            (asserts! (> current-count u0) (err u1))
+            (var-set count (- current-count u1))
+            (ok true)
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
