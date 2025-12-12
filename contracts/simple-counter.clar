@@ -84,6 +84,14 @@
     )
 )
 
+;; @notice Reseta o contador para 0
+(define-public (reset)
+    (begin
+        (var-set count u0)
+        (ok true)
+    )
+)
+
 ;; read only functions
 ;;
 
