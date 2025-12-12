@@ -38,8 +38,8 @@
     (begin
         (let ((sender tx-sender))
             (begin
-                ;; Valida endereco
-                (asserts! (is-eq to sender) (err u1))
+                ;; Valida endereco (nao pode enviar para si mesmo)
+                (asserts! (not (is-eq to sender)) (err u1))
                 ;; Registra interacao
                 (register-interaction sender)
                 ;; Incrementa kudos enviados pelo sender
