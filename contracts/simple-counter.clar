@@ -113,7 +113,23 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna o valor atual do contador
+(define-read-only (get-count)
+    (ok (var-get count))
+)
+
+;; @notice Retorna o total de usuarios unicos
+(define-read-only (get-total-unique-users)
+    (ok (var-get total-unique-users))
+)
+
+;; @notice Retorna quantas vezes o usuario atual interagiu
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count
+        count
+        u0
+    ))
+)
 
 ;; private functions
 ;;
