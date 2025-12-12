@@ -89,6 +89,48 @@
     ))
 )
 
+;; @notice Retorna o total de usuarios unicos
+(define-read-only (get-total-unique-users)
+    (ok (var-get total-unique-users))
+)
+
+;; @notice Retorna o total de kudos enviados
+(define-read-only (get-total-kudos)
+    (ok (var-get total-kudos))
+)
+
+;; @notice Retorna quantos kudos um usuario enviou
+(define-read-only (get-kudos-sent (user principal))
+    (ok (match (map-get? kudos-sent user) count
+        count
+        u0
+    ))
+)
+
+;; @notice Retorna quantos kudos um usuario recebeu
+(define-read-only (get-kudos-received (user principal))
+    (ok (match (map-get? kudos-received user) count
+        count
+        u0
+    ))
+)
+
+;; @notice Verifica se um endereco ja interagiu
+(define-read-only (get-has-interacted (user principal))
+    (ok (match (map-get? has-interacted user) interacted
+        interacted
+        false
+    ))
+)
+
+;; @notice Retorna quantas vezes um endereco interagiu
+(define-read-only (get-interactions-count (user principal))
+    (ok (match (map-get? interactions-count user) count
+        count
+        u0
+    ))
+)
+
 ;; private functions
 ;; @notice Registra uma interacao do usuario
 (define-private (register-interaction (sender principal))
