@@ -117,7 +117,24 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna um resumo dos dados de GM do usuario atual
+(define-read-only (my-gm-data)
+    (let ((sender tx-sender))
+        (ok {
+            gm-count: (match (map-get? gm-count sender) count count u0),
+            current-streak: (match (map-get? current-streak sender) streak streak u0),
+            best-streak: (match (map-get? best-streak sender) best best u0),
+            last-gm-day: (match (map-get? last-gm-day sender) day day u0)
+        })
+    )
+)
+
+;; @notice Retorna algumas metricas globais basicas
+(define-read-only (global-stats)
+    (ok {
+        total-unique-users: (var-get total-unique-users)
+    })
+)
 
 ;; private functions
 ;;
