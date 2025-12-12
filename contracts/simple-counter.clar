@@ -131,6 +131,22 @@
     ))
 )
 
+;; @notice Verifica se um endereco ja interagiu
+(define-read-only (get-has-interacted (user principal))
+    (ok (match (map-get? has-interacted user) interacted
+        interacted
+        false
+    ))
+)
+
+;; @notice Retorna quantas vezes um endereco interagiu
+(define-read-only (get-interactions-count (user principal))
+    (ok (match (map-get? interactions-count user) count
+        count
+        u0
+    ))
+)
+
 ;; private functions
 ;;
 
