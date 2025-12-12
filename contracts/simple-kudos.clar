@@ -65,7 +65,29 @@
 )
 
 ;; read only functions
-;;
+;; @notice Quantas vezes o usuario atual interagiu com o contrato
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count
+        count
+        u0
+    ))
+)
+
+;; @notice Quantos kudos o usuario atual enviou
+(define-read-only (my-kudos-sent)
+    (ok (match (map-get? kudos-sent tx-sender) count
+        count
+        u0
+    ))
+)
+
+;; @notice Quantos kudos o usuario atual recebeu
+(define-read-only (my-kudos-received)
+    (ok (match (map-get? kudos-received tx-sender) count
+        count
+        u0
+    ))
+)
 
 ;; private functions
 ;; @notice Registra uma interacao do usuario
