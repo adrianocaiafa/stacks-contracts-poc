@@ -27,7 +27,13 @@
 (define-map interactions-count principal uint)
 
 ;; public functions
-;;
+;; @notice Incrementa o contador em 1
+(define-public (increment)
+    (begin
+        (var-set count (+ (var-get count) u1))
+        (ok true)
+    )
+)
 
 ;; read only functions
 ;;
