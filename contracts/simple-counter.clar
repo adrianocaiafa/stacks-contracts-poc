@@ -58,10 +58,28 @@
 ;; @notice Decrementa o contador em 1 (requer count > 0)
 (define-public (decrement)
     (begin
-        (let ((current-count (var-get count)))
-            (asserts! (> current-count u0) (err u1))
-            (var-set count (- current-count u1))
-            (ok true)
+        (let ((sender tx-sender))
+            (let ((current-count (var-get count)))
+                (asserts! (> current-count u0) (err u1))
+                ;; Registro generico de interacao
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                    )
+                )
+                ;; Incrementa contador de interacoes
+                (let ((interaction-count (match (map-get? interactions-count sender) count
+                    count
+                    u0
+                )))
+                    (map-set interactions-count sender (+ interaction-count u1))
+                )
+                ;; Decrementa contador global
+                (var-set count (- current-count u1))
+                (ok true)
+            )
         )
     )
 )
