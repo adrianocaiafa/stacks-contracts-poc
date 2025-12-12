@@ -70,6 +70,42 @@
                         u0
                     )))
                         (map-set gm-count sender (+ current-gm-count u1))
+                        ;; Streak de dias seguidos
+                        (let ((current-streak-value (match (map-get? current-streak sender) streak
+                            streak
+                            u0
+                        )))
+                            (if (= (+ last-day u1) today)
+                                ;; Manteve streak
+                                (let ((new-streak (+ current-streak-value u1)))
+                                    (map-set current-streak sender new-streak)
+                                    ;; Atualiza best streak
+                                    (let ((best-streak-value (match (map-get? best-streak sender) best
+                                        best
+                                        u0
+                                    )))
+                                        (if (> new-streak best-streak-value)
+                                            (map-set best-streak sender new-streak)
+                                            true
+                                        )
+                                    )
+                                )
+                                ;; Resetou streak
+                                (begin
+                                    (map-set current-streak sender u1)
+                                    ;; Atualiza best streak se necessario
+                                    (let ((best-streak-value (match (map-get? best-streak sender) best
+                                        best
+                                        u0
+                                    )))
+                                        (if (> u1 best-streak-value)
+                                            (map-set best-streak sender u1)
+                                            true
+                                        )
+                                    )
+                                )
+                            )
+                        )
                     )
                     ;; Atualiza o dia do ultimo GM
                     (map-set last-gm-day sender today)
