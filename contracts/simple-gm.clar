@@ -48,7 +48,7 @@
                     u0
                 )))
                     ;; Verifica se ja deu GM hoje
-                    (asserts! (not (= today last-day)) (err u1))
+                    (asserts! (not (is-eq today last-day)) (err u1))
                     ;; Registro generico de interacao
                     (match (map-get? has-interacted sender) already-interacted
                         true
@@ -75,7 +75,7 @@
                             streak
                             u0
                         )))
-                            (if (= (+ last-day u1) today)
+                            (if (is-eq (+ last-day u1) today)
                                 ;; Manteve streak
                                 (let ((new-streak (+ current-streak-value u1)))
                                     (map-set current-streak sender new-streak)
