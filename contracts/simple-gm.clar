@@ -136,6 +136,59 @@
     })
 )
 
+;; @notice Retorna o total de usuarios unicos
+(define-read-only (get-total-unique-users)
+    (ok (var-get total-unique-users))
+)
+
+;; @notice Retorna a contagem de GMs de um usuario especifico
+(define-read-only (get-gm-count (user principal))
+    (ok (match (map-get? gm-count user) count
+        count
+        u0
+    ))
+)
+
+;; @notice Retorna o streak atual de um usuario especifico
+(define-read-only (get-current-streak (user principal))
+    (ok (match (map-get? current-streak user) streak
+        streak
+        u0
+    ))
+)
+
+;; @notice Retorna o melhor streak de um usuario especifico
+(define-read-only (get-best-streak (user principal))
+    (ok (match (map-get? best-streak user) best
+        best
+        u0
+    ))
+)
+
+;; @notice Retorna o dia do ultimo GM de um usuario especifico
+(define-read-only (get-last-gm-day (user principal))
+    (ok (match (map-get? last-gm-day user) day
+        day
+        u0
+    ))
+)
+
+;; @notice Retorna quantas vezes um endereco interagiu
+(define-read-only (get-interactions-count (user principal))
+    (ok (match (map-get? interactions-count user) count
+        count
+        u0
+    ))
+)
+
+;; @notice Retorna quantas vezes o usuario atual interagiu
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count
+        count
+        u0
+    ))
+)
+
 ;; private functions
 ;;
 
