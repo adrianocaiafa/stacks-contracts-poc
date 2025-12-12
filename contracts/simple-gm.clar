@@ -38,7 +38,47 @@
 (define-map best-streak principal uint)
 
 ;; public functions
-;;
+;; @notice Da um GM on-chain (no maximo 1 vez por dia por endereco)
+(define-public (gm)
+    (begin
+        (let ((sender tx-sender))
+            (let ((today (/ burn-block-height BLOCKS_PER_DAY)))
+                (let ((last-day (match (map-get? last-gm-day sender) day
+                    day
+                    u0
+                )))
+                    ;; Verifica se ja deu GM hoje
+                    (asserts! (not (= today last-day)) (err u1))
+                    ;; Registro generico de interacao
+                    (match (map-get? has-interacted sender) already-interacted
+                        true
+                        (begin
+                            (map-set has-interacted sender true)
+                            (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                        )
+                    )
+                    ;; Incrementa contador de interacoes
+                    (let ((current-count (match (map-get? interactions-count sender) count
+                        count
+                        u0
+                    )))
+                        (map-set interactions-count sender (+ current-count u1))
+                    )
+                    ;; Atualiza contagem de GMs
+                    (let ((current-gm-count (match (map-get? gm-count sender) count
+                        count
+                        u0
+                    )))
+                        (map-set gm-count sender (+ current-gm-count u1))
+                    )
+                    ;; Atualiza o dia do ultimo GM
+                    (map-set last-gm-day sender today)
+                    (ok true)
+                )
+            )
+        )
+    )
+)
 
 ;; read only functions
 ;;
