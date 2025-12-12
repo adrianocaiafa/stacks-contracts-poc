@@ -26,6 +26,12 @@
 ;; Quantas vezes cada endereco ja interagiu
 (define-map interactions-count principal uint)
 
+;; Total de kudos que um usuario recebeu
+(define-map kudos-received principal uint)
+
+;; Total de kudos que um usuario enviou
+(define-map kudos-sent principal uint)
+
 ;; public functions
 ;;
 
