@@ -41,11 +41,11 @@
                     )
                 )
                 ;; Incrementa contador de interacoes
-                (let ((current-count (match (map-get? interactions-count sender) count
-                    count
+                (let ((current-interaction-count (match (map-get? interactions-count sender) interaction-count
+                    interaction-count
                     u0
                 )))
-                    (map-set interactions-count sender (+ current-count u1))
+                    (map-set interactions-count sender (+ current-interaction-count u1))
                 )
                 ;; Incrementa contador global
                 (var-set count (+ (var-get count) u1))
@@ -70,11 +70,11 @@
                     )
                 )
                 ;; Incrementa contador de interacoes
-                (let ((interaction-count (match (map-get? interactions-count sender) count
-                    count
+                (let ((current-interaction-count (match (map-get? interactions-count sender) interaction-count
+                    interaction-count
                     u0
                 )))
-                    (map-set interactions-count sender (+ interaction-count u1))
+                    (map-set interactions-count sender (+ current-interaction-count u1))
                 )
                 ;; Decrementa contador global
                 (var-set count (- current-count u1))
@@ -98,11 +98,11 @@
                     )
                 )
                 ;; Incrementa contador de interacoes
-                (let ((interaction-count (match (map-get? interactions-count sender) count
-                    count
+                (let ((current-interaction-count (match (map-get? interactions-count sender) interaction-count
+                    interaction-count
                     u0
                 )))
-                    (map-set interactions-count sender (+ interaction-count u1))
+                    (map-set interactions-count sender (+ current-interaction-count u1))
                 )
                 ;; Reseta contador global
                 (var-set count u0)
@@ -125,8 +125,8 @@
 
 ;; @notice Retorna quantas vezes o usuario atual interagiu
 (define-read-only (my-interactions)
-    (ok (match (map-get? interactions-count tx-sender) count
-        count
+    (ok (match (map-get? interactions-count tx-sender) interaction-count
+        interaction-count
         u0
     ))
 )
@@ -141,8 +141,8 @@
 
 ;; @notice Retorna quantas vezes um endereco interagiu
 (define-read-only (get-interactions-count (user principal))
-    (ok (match (map-get? interactions-count user) count
-        count
+    (ok (match (map-get? interactions-count user) interaction-count
+        interaction-count
         u0
     ))
 )
