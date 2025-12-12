@@ -33,7 +33,36 @@
 (define-map kudos-sent principal uint)
 
 ;; public functions
-;;
+;; @notice Envia 1 kudos para um endereco especifico
+(define-public (give-kudos (to principal))
+    (begin
+        (let ((sender tx-sender))
+            (begin
+                ;; Valida endereco
+                (asserts! (is-eq to sender) (err u1))
+                ;; Registra interacao
+                (register-interaction sender)
+                ;; Incrementa kudos enviados pelo sender
+                (let ((sender-kudos-sent (match (map-get? kudos-sent sender) count
+                    count
+                    u0
+                )))
+                    (map-set kudos-sent sender (+ sender-kudos-sent u1))
+                )
+                ;; Incrementa kudos recebidos pelo receiver
+                (let ((receiver-kudos-received (match (map-get? kudos-received to) count
+                    count
+                    u0
+                )))
+                    (map-set kudos-received to (+ receiver-kudos-received u1))
+                )
+                ;; Incrementa total de kudos
+                (var-set total-kudos (+ (var-get total-kudos) u1))
+                (ok true)
+            )
+        )
+    )
+)
 
 ;; read only functions
 ;;
