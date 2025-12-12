@@ -30,8 +30,28 @@
 ;; @notice Incrementa o contador em 1
 (define-public (increment)
     (begin
-        (var-set count (+ (var-get count) u1))
-        (ok true)
+        (let ((sender tx-sender))
+            (begin
+                ;; Registro generico de interacao
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                    )
+                )
+                ;; Incrementa contador de interacoes
+                (let ((current-count (match (map-get? interactions-count sender) count
+                    count
+                    u0
+                )))
+                    (map-set interactions-count sender (+ current-count u1))
+                )
+                ;; Incrementa contador global
+                (var-set count (+ (var-get count) u1))
+                (ok true)
+            )
+        )
     )
 )
 
