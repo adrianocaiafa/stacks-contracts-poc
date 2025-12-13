@@ -88,7 +88,22 @@
 )
 
 ;; read only functions
-;;
+;; @notice Quantas vezes o usuario atual interagiu com o contrato
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count
+        count
+        u0
+    ))
+)
+
+;; @notice Retorna contadores de ping/pong e timestamp da ultima acao do usuario atual
+(define-read-only (my-ping-pong)
+    (ok {
+        pings: (match (map-get? ping-count tx-sender) count count u0),
+        pongs: (match (map-get? pong-count tx-sender) count count u0),
+        last-at: (match (map-get? last-action-at tx-sender) timestamp timestamp u0)
+    })
+)
 
 ;; private functions
 ;; @notice Registra uma interacao do usuario
