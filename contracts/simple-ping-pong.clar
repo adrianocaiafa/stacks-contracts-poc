@@ -63,6 +63,30 @@
     )
 )
 
+;; @notice Registra um pong e retorna PING
+(define-public (pong)
+    (begin
+        (let ((sender tx-sender))
+            (begin
+                ;; Registra interacao
+                (register-interaction sender)
+                ;; Incrementa pong count do usuario
+                (let ((user-pong-count (match (map-get? pong-count sender) count
+                    count
+                    u0
+                )))
+                    (map-set pong-count sender (+ user-pong-count u1))
+                )
+                ;; Incrementa total de pongs
+                (var-set total-pongs (+ (var-get total-pongs) u1))
+                ;; Atualiza timestamp da ultima acao
+                (map-set last-action-at sender burn-block-height)
+                (ok (some "PING"))
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
