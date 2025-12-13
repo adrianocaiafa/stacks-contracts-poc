@@ -105,6 +105,61 @@
     })
 )
 
+;; @notice Retorna o total de usuarios unicos
+(define-read-only (get-total-unique-users)
+    (ok (var-get total-unique-users))
+)
+
+;; @notice Retorna o total de pings registrados
+(define-read-only (get-total-pings)
+    (ok (var-get total-pings))
+)
+
+;; @notice Retorna o total de pongs registrados
+(define-read-only (get-total-pongs)
+    (ok (var-get total-pongs))
+)
+
+;; @notice Retorna quantos pings um usuario registrou
+(define-read-only (get-ping-count (user principal))
+    (ok (match (map-get? ping-count user) count
+        count
+        u0
+    ))
+)
+
+;; @notice Retorna quantos pongs um usuario registrou
+(define-read-only (get-pong-count (user principal))
+    (ok (match (map-get? pong-count user) count
+        count
+        u0
+    ))
+)
+
+;; @notice Retorna o timestamp da ultima acao de um usuario
+(define-read-only (get-last-action-at (user principal))
+    (ok (match (map-get? last-action-at user) timestamp
+        timestamp
+        u0
+    ))
+)
+
+;; @notice Verifica se um endereco ja interagiu
+(define-read-only (get-has-interacted (user principal))
+    (ok (match (map-get? has-interacted user) interacted
+        interacted
+        false
+    ))
+)
+
+;; @notice Retorna quantas vezes um endereco interagiu
+(define-read-only (get-interactions-count (user principal))
+    (ok (match (map-get? interactions-count user) count
+        count
+        u0
+    ))
+)
+
 ;; private functions
 ;; @notice Registra uma interacao do usuario
 (define-private (register-interaction (sender principal))
