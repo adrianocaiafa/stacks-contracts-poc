@@ -29,6 +29,15 @@
 ;; Quantas vezes cada endereco ja interagiu
 (define-map interactions-count principal uint)
 
+;; Quantos pings cada endereco registrou
+(define-map ping-count principal uint)
+
+;; Quantos pongs cada endereco registrou
+(define-map pong-count principal uint)
+
+;; Timestamp do ultimo ping ou pong de cada endereco
+(define-map last-action-at principal uint)
+
 ;; public functions
 ;;
 
