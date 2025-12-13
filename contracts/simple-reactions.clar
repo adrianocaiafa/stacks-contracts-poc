@@ -90,9 +90,8 @@
 ;; private functions
 ;; @notice Define uma reacao para um usuario
 (define-private (set-reaction (sender principal) (new-reaction uint))
-    (begin
-        ;; Valida reacao (deve ser 0, 1 ou 2)
-        (asserts! (and (>= new-reaction REACTION_NONE) (<= new-reaction REACTION_DISLIKE)) (err u1))
+    (let ((valid-reaction (and (>= new-reaction REACTION_NONE) (<= new-reaction REACTION_DISLIKE))))
+        (asserts! valid-reaction (err u1))
         ;; Obtem reacao antiga
         (let ((old-reaction (match (map-get? reactions sender) reaction
             reaction
@@ -100,7 +99,7 @@
         )))
             ;; Se a reacao nao mudou, nao faz nada
             (if (is-eq old-reaction new-reaction)
-                true
+                (ok true)
                 (begin
                     ;; Remove reacao antiga dos contadores
                     (if (is-eq old-reaction REACTION_LIKE)
@@ -120,7 +119,7 @@
                             true
                         )
                     )
-                    true
+                    (ok true)
                 )
             )
         )
