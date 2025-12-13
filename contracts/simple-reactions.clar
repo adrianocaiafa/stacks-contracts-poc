@@ -11,9 +11,9 @@
 
 ;; constants
 ;; Valores de reacao: -1 = dislike, 0 = nenhuma, 1 = like
-(define-constant REACTION_DISLIKE i128 -1)
-(define-constant REACTION_NONE i128 0)
-(define-constant REACTION_LIKE i128 1)
+(define-constant REACTION_DISLIKE -1)
+(define-constant REACTION_NONE 0)
+(define-constant REACTION_LIKE 1)
 
 ;; data vars
 ;; Total de likes
