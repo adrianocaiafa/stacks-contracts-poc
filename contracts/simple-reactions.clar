@@ -29,25 +29,25 @@
 ;; public functions
 ;; @notice Define reacao como like
 (define-public (like)
-    (begin
-        (set-reaction tx-sender REACTION_LIKE)
-        (ok true)
+    (match (set-reaction tx-sender REACTION_LIKE)
+        (ok result) (ok true)
+        (err error-code) (err error-code)
     )
 )
 
 ;; @notice Define reacao como dislike
 (define-public (dislike)
-    (begin
-        (set-reaction tx-sender REACTION_DISLIKE)
-        (ok true)
+    (match (set-reaction tx-sender REACTION_DISLIKE)
+        (ok result) (ok true)
+        (err error-code) (err error-code)
     )
 )
 
 ;; @notice Remove reacao (define como nenhuma)
 (define-public (clear-reaction)
-    (begin
-        (set-reaction tx-sender REACTION_NONE)
-        (ok true)
+    (match (set-reaction tx-sender REACTION_NONE)
+        (ok result) (ok true)
+        (err error-code) (err error-code)
     )
 )
 
