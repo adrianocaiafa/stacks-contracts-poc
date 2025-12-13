@@ -31,6 +31,7 @@
 (define-public (like)
     (match (set-reaction tx-sender REACTION_LIKE) result
         (ok true)
+        error-code
         (err error-code)
     )
 )
@@ -39,6 +40,7 @@
 (define-public (dislike)
     (match (set-reaction tx-sender REACTION_DISLIKE) result
         (ok true)
+        error-code
         (err error-code)
     )
 )
@@ -47,6 +49,7 @@
 (define-public (clear-reaction)
     (match (set-reaction tx-sender REACTION_NONE) result
         (ok true)
+        error-code
         (err error-code)
     )
 )
