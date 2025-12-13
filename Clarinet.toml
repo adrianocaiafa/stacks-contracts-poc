@@ -30,8 +30,18 @@ path = 'contracts/simple-message.clar'
 clarity_version = 4
 epoch = 'latest'
 
+[contracts.simple-ping-pong]
+path = 'contracts/simple-ping-pong.clar'
+clarity_version = 4
+epoch = 'latest'
+
 [contracts.simple-points]
 path = 'contracts/simple-points.clar'
+clarity_version = 4
+epoch = 'latest'
+
+[contracts.simple-reactions]
+path = 'contracts/simple-reactions.clar'
 clarity_version = 4
 epoch = 'latest'
 [repl.analysis]
