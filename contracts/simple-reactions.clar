@@ -10,10 +10,10 @@
 ;;
 
 ;; constants
-;; Valores de reacao: -1 = dislike, 0 = nenhuma, 1 = like
-(define-constant REACTION_DISLIKE -1)
-(define-constant REACTION_NONE 0)
-(define-constant REACTION_LIKE 1)
+;; Valores de reacao: 0 = nenhuma, 1 = like, 2 = dislike
+(define-constant REACTION_NONE u0)
+(define-constant REACTION_LIKE u1)
+(define-constant REACTION_DISLIKE u2)
 
 ;; data vars
 ;; Total de likes
@@ -23,8 +23,8 @@
 (define-data-var dislikes uint u0)
 
 ;; data maps
-;; Reacao de cada endereco (-1 = dislike, 0 = nenhuma, 1 = like)
-(define-map reactions principal int128)
+;; Reacao de cada endereco (0 = nenhuma, 1 = like, 2 = dislike)
+(define-map reactions principal uint)
 
 ;; public functions
 ;; @notice Define reacao como like
@@ -89,10 +89,10 @@
 
 ;; private functions
 ;; @notice Define uma reacao para um usuario
-(define-private (set-reaction (sender principal) (new-reaction int128))
+(define-private (set-reaction (sender principal) (new-reaction uint))
     (begin
-        ;; Valida reacao
-        (asserts! (and (>= new-reaction REACTION_DISLIKE) (<= new-reaction REACTION_LIKE)) (err u1))
+        ;; Valida reacao (deve ser 0, 1 ou 2)
+        (asserts! (and (>= new-reaction REACTION_NONE) (<= new-reaction REACTION_DISLIKE)) (err u1))
         ;; Obtem reacao antiga
         (let ((old-reaction (match (map-get? reactions sender) reaction
             reaction
