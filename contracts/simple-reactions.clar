@@ -70,6 +70,23 @@
     ))
 )
 
+;; @notice Retorna a reacao de um usuario especifico
+(define-read-only (get-reaction (user principal))
+    (ok (match (map-get? reactions user) reaction
+        reaction
+        REACTION_NONE
+    ))
+)
+
+;; @notice Retorna estatisticas completas (likes, dislikes e total)
+(define-read-only (get-stats)
+    (ok {
+        likes: (var-get likes),
+        dislikes: (var-get dislikes),
+        total: (+ (var-get likes) (var-get dislikes))
+    })
+)
+
 ;; private functions
 ;; @notice Define uma reacao para um usuario
 (define-private (set-reaction (sender principal) (new-reaction int128))
