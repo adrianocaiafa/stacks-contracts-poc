@@ -52,7 +52,23 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna o total de likes
+(define-read-only (get-likes)
+    (ok (var-get likes))
+)
+
+;; @notice Retorna o total de dislikes
+(define-read-only (get-dislikes)
+    (ok (var-get dislikes))
+)
+
+;; @notice Retorna a reacao do usuario atual
+(define-read-only (my-reaction)
+    (ok (match (map-get? reactions tx-sender) reaction
+        reaction
+        REACTION_NONE
+    ))
+)
 
 ;; private functions
 ;; @notice Define uma reacao para um usuario
