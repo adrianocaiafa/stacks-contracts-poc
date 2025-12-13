@@ -33,5 +33,42 @@
 ;;
 
 ;; private functions
-;;
+;; @notice Define uma reacao para um usuario
+(define-private (set-reaction (sender principal) (new-reaction int128))
+    (begin
+        ;; Valida reacao
+        (asserts! (and (>= new-reaction REACTION_DISLIKE) (<= new-reaction REACTION_LIKE)) (err u1))
+        ;; Obtem reacao antiga
+        (let ((old-reaction (match (map-get? reactions sender) reaction
+            reaction
+            REACTION_NONE
+        )))
+            ;; Se a reacao nao mudou, nao faz nada
+            (if (is-eq old-reaction new-reaction)
+                true
+                (begin
+                    ;; Remove reacao antiga dos contadores
+                    (if (is-eq old-reaction REACTION_LIKE)
+                        (var-set likes (- (var-get likes) u1))
+                        (if (is-eq old-reaction REACTION_DISLIKE)
+                            (var-set dislikes (- (var-get dislikes) u1))
+                            true
+                        )
+                    )
+                    ;; Aplica nova reacao
+                    (map-set reactions sender new-reaction)
+                    ;; Adiciona nova reacao aos contadores
+                    (if (is-eq new-reaction REACTION_LIKE)
+                        (var-set likes (+ (var-get likes) u1))
+                        (if (is-eq new-reaction REACTION_DISLIKE)
+                            (var-set dislikes (+ (var-get dislikes) u1))
+                            true
+                        )
+                    )
+                    true
+                )
+            )
+        )
+    )
+)
 
