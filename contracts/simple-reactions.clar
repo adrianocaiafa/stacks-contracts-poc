@@ -1,7 +1,7 @@
 ;; title: simple-reactions
-;; version:
-;; summary:
-;; description:
+;; version: 1.0.0
+;; summary: Sistema de like/dislike para um item compartilhado
+;; description: Contrato que permite reagir com like ou dislike a um item unico
 
 ;; traits
 ;;
