@@ -13,7 +13,14 @@
 ;;
 
 ;; data vars
-;;
+;; Total de usuarios unicos que ja interagiram
+(define-data-var total-unique-users uint u0)
+
+;; Total de pings registrados
+(define-data-var total-pings uint u0)
+
+;; Total de pongs registrados
+(define-data-var total-pongs uint u0)
 
 ;; data maps
 ;;
