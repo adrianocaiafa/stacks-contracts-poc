@@ -39,7 +39,29 @@
 (define-map last-action-at principal uint)
 
 ;; public functions
-;;
+;; @notice Registra um ping e retorna PONG
+(define-public (ping)
+    (begin
+        (let ((sender tx-sender))
+            (begin
+                ;; Registra interacao
+                (register-interaction sender)
+                ;; Incrementa ping count do usuario
+                (let ((user-ping-count (match (map-get? ping-count sender) count
+                    count
+                    u0
+                )))
+                    (map-set ping-count sender (+ user-ping-count u1))
+                )
+                ;; Incrementa total de pings
+                (var-set total-pings (+ (var-get total-pings) u1))
+                ;; Atualiza timestamp da ultima acao
+                (map-set last-action-at sender burn-block-height)
+                (ok (some "PONG"))
+            )
+        )
+    )
+)
 
 ;; read only functions
 ;;
