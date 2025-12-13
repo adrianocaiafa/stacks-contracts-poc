@@ -27,7 +27,29 @@
 (define-map reactions principal int128)
 
 ;; public functions
-;;
+;; @notice Define reacao como like
+(define-public (like)
+    (begin
+        (set-reaction tx-sender REACTION_LIKE)
+        (ok true)
+    )
+)
+
+;; @notice Define reacao como dislike
+(define-public (dislike)
+    (begin
+        (set-reaction tx-sender REACTION_DISLIKE)
+        (ok true)
+    )
+)
+
+;; @notice Remove reacao (define como nenhuma)
+(define-public (clear-reaction)
+    (begin
+        (set-reaction tx-sender REACTION_NONE)
+        (ok true)
+    )
+)
 
 ;; read only functions
 ;;
