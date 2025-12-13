@@ -41,12 +41,27 @@
 ;; public functions
 ;;
 
-;; public functions
-;;
-
 ;; read only functions
 ;;
 
 ;; private functions
-;;
+;; @notice Registra uma interacao do usuario
+(define-private (register-interaction (sender principal))
+    (begin
+        (match (map-get? has-interacted sender) already-interacted
+            true
+            (begin
+                (map-set has-interacted sender true)
+                (var-set total-unique-users (+ (var-get total-unique-users) u1))
+            )
+        )
+        (let ((current-count (match (map-get? interactions-count sender) count
+            count
+            u0
+        )))
+            (map-set interactions-count sender (+ current-count u1))
+        )
+        true
+    )
+)
 
