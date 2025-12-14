@@ -10,6 +10,11 @@ path = 'contracts/simple-counter.clar'
 clarity_version = 4
 epoch = 'latest'
 
+[contracts.simple-flag]
+path = 'contracts/simple-flag.clar'
+clarity_version = 4
+epoch = 'latest'
+
 [contracts.simple-gm]
 path = 'contracts/simple-gm.clar'
 clarity_version = 4
