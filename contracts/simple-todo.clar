@@ -182,5 +182,25 @@
     (ok (match (map-get? interactions-count user) count count u0))
 )
 
+;; @notice Retorna o numero de tarefas de um usuario
+(define-read-only (get-task-count (user principal))
+    (ok (match (map-get? task-count user) count count u0))
+)
+
+;; @notice Retorna o numero de tarefas do usuario atual
+(define-read-only (my-task-count)
+    (ok (match (map-get? task-count tx-sender) count count u0))
+)
+
+;; @notice Retorna uma tarefa especifica por ID
+(define-read-only (get-task (user principal) (id uint))
+    (ok (map-get? tasks (tuple (user user) (id id))))
+)
+
+;; @notice Retorna uma tarefa do usuario atual por ID
+(define-read-only (my-task (id uint))
+    (ok (map-get? tasks (tuple (user tx-sender) (id id))))
+)
+
 ;; private functions
 ;;
