@@ -82,7 +82,35 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna quantas vezes voce interagiu com este contrato
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count count u0))
+)
+
+;; @notice Retorna o valor atual da sua flag
+(define-read-only (my-flag)
+    (ok (match (map-get? flag tx-sender) flag-value flag-value false))
+)
+
+;; @notice Retorna o total de usuarios unicos
+(define-read-only (get-total-unique-users)
+    (ok (var-get total-unique-users))
+)
+
+;; @notice Retorna se um usuario ja interagiu com o contrato
+(define-read-only (has-user-interacted (user principal))
+    (ok (match (map-get? has-interacted user) interacted interacted false))
+)
+
+;; @notice Retorna o contador de interacoes de um usuario especifico
+(define-read-only (get-interactions-count (user principal))
+    (ok (match (map-get? interactions-count user) count count u0))
+)
+
+;; @notice Retorna a flag de um usuario especifico
+(define-read-only (get-flag (user principal))
+    (ok (match (map-get? flag user) flag-value flag-value false))
+)
 
 ;; private functions
 ;;
