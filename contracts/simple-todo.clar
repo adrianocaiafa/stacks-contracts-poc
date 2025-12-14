@@ -77,6 +77,48 @@
     )
 )
 
+;; @notice Alterna o estado de conclusao de uma tarefa
+(define-public (toggle-done (id uint))
+    (let ((sender tx-sender))
+        (begin
+            ;; Conta usuario unico se for a primeira interacao
+            (match (map-get? has-interacted sender) already-interacted
+                true
+                (begin
+                    (map-set has-interacted sender true)
+                    (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                )
+            )
+            ;; Incrementa contador de interacoes
+            (let ((current-count (match (map-get? interactions-count sender) count
+                count
+                u0
+            )))
+                (map-set interactions-count sender (+ current-count u1))
+            )
+            ;; Obtem a tarefa
+            (let ((task-key (tuple (user sender) (id id))))
+                (match (map-get? tasks task-key) task
+                    (begin
+                        (asserts! (not (get deleted task)) (err u1))
+                        ;; Alterna o estado done
+                        (map-set tasks task-key 
+                            (tuple 
+                                (id (get id task))
+                                (text (get text task))
+                                (done (not (get done task)))
+                                (deleted (get deleted task))
+                            )
+                        )
+                        (ok true)
+                    )
+                    (err u2)
+                )
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
