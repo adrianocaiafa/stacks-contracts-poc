@@ -53,6 +53,34 @@
     )
 )
 
+;; @notice Alterna o valor atual da flag
+(define-public (toggle-flag)
+    (let ((sender tx-sender))
+        (begin
+            ;; Conta usuario unico se for a primeira interacao
+            (match (map-get? has-interacted sender) already-interacted
+                true
+                (begin
+                    (map-set has-interacted sender true)
+                    (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                )
+            )
+            ;; Incrementa contador de interacoes
+            (let ((current-count (match (map-get? interactions-count sender) count
+                count
+                u0
+            )))
+                (map-set interactions-count sender (+ current-count u1))
+            )
+            ;; Alterna o valor da flag
+            (let ((current-flag (match (map-get? flag sender) flag-value flag-value false)))
+                (map-set flag sender (not current-flag))
+            )
+            (ok true)
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
