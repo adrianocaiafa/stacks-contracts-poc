@@ -119,6 +119,48 @@
     )
 )
 
+;; @notice Deleta uma tarefa (marca como deletada)
+(define-public (delete-task (id uint))
+    (let ((sender tx-sender))
+        (begin
+            ;; Conta usuario unico se for a primeira interacao
+            (match (map-get? has-interacted sender) already-interacted
+                true
+                (begin
+                    (map-set has-interacted sender true)
+                    (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                )
+            )
+            ;; Incrementa contador de interacoes
+            (let ((current-count (match (map-get? interactions-count sender) count
+                count
+                u0
+            )))
+                (map-set interactions-count sender (+ current-count u1))
+            )
+            ;; Obtem a tarefa
+            (let ((task-key (tuple (user sender) (id id))))
+                (match (map-get? tasks task-key) task
+                    (begin
+                        (asserts! (not (get deleted task)) (err u3))
+                        ;; Marca como deletada
+                        (map-set tasks task-key 
+                            (tuple 
+                                (id (get id task))
+                                (text (get text task))
+                                (done (get done task))
+                                (deleted true)
+                            )
+                        )
+                        (ok true)
+                    )
+                    (err u4)
+                )
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
