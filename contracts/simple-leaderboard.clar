@@ -133,6 +133,22 @@
     (ok (var-get participants-count))
 )
 
+;; @notice Retorna um participante pelo indice
+(define-read-only (get-participant (index uint))
+    (ok (map-get? participants index))
+)
+
+;; @notice Retorna pontos e participante de um indice (para leaderboard)
+(define-read-only (get-participant-with-points (index uint))
+    (match (map-get? participants index) participant
+        (ok (some {
+            user: participant,
+            points: (match (map-get? points participant) pts pts u0)
+        }))
+        (ok none)
+    )
+)
+
 ;; private functions
 ;; @notice Registra um usuario (adiciona a lista de participantes se for primeira vez)
 (define-private (register-user (user principal))
