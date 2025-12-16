@@ -58,4 +58,31 @@
 ;;
 
 ;; private functions
-;;
+;; @notice Registra um usuario (adiciona a lista de participantes se for primeira vez)
+(define-private (register-user (user principal))
+    (begin
+        ;; Se e a primeira interacao, adiciona a lista de participantes
+        (match (map-get? has-interacted user) already-interacted
+            true
+            (begin
+                (map-set has-interacted user true)
+                (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                ;; Adiciona a lista de participantes
+                (let ((next-index (var-get participants-count)))
+                    (begin
+                        (map-set participants next-index user)
+                        (var-set participants-count (+ next-index u1))
+                    )
+                )
+            )
+        )
+        ;; Incrementa contador de interacoes
+        (let ((current-count (match (map-get? interactions-count user) count
+            count
+            u0
+        )))
+            (map-set interactions-count user (+ current-count u1))
+        )
+        (ok true)
+    )
+)
