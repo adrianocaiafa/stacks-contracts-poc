@@ -33,7 +33,26 @@
 (define-map participants uint principal)
 
 ;; public functions
-;;
+;; @notice Ganha pontos simplesmente interagindo
+(define-public (gain-points (amount uint))
+    (begin
+        (asserts! (> amount u0) (err u1))
+        (let ((sender tx-sender))
+            (begin
+                ;; Registra usuario se for primeira interacao
+                (register-user sender)
+                ;; Adiciona pontos
+                (let ((current-points (match (map-get? points sender) pts
+                    pts
+                    u0
+                )))
+                    (map-set points sender (+ current-points amount))
+                )
+                (ok true)
+            )
+        )
+    )
+)
 
 ;; read only functions
 ;;
