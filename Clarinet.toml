@@ -30,6 +30,11 @@ path = 'contracts/simple-kudos.clar'
 clarity_version = 4
 epoch = 'latest'
 
+[contracts.simple-leaderboard]
+path = 'contracts/simple-leaderboard.clar'
+clarity_version = 4
+epoch = 'latest'
+
 [contracts.simple-level-up]
 path = 'contracts/simple-level-up.clar'
 clarity_version = 4
