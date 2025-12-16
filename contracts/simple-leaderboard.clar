@@ -40,7 +40,7 @@
         (let ((sender tx-sender))
             (begin
                 ;; Registra usuario se for primeira interacao
-                (register-user sender)
+                (try! (register-user sender))
                 ;; Adiciona pontos
                 (let ((current-points (match (map-get? points sender) pts
                     pts
@@ -49,6 +49,49 @@
                     (map-set points sender (+ current-points amount))
                 )
                 (ok true)
+            )
+        )
+    )
+)
+
+;; @notice Duelo simples entre usuarios - quem tem mais pontos ganha
+(define-public (duel (opponent principal) (amount uint))
+    (begin
+        (asserts! (is-some (some opponent)) (err u2))
+        (asserts! (not (is-eq opponent tx-sender)) (err u3))
+        (let ((sender tx-sender))
+            (begin
+                ;; Verifica se tem pontos suficientes
+                (let ((sender-points (match (map-get? points sender) pts pts u0))
+                      (opponent-points (match (map-get? points opponent) pts pts u0)))
+                    (begin
+                        (asserts! (>= sender-points amount) (err u4))
+                        (asserts! (>= opponent-points amount) (err u5))
+                        ;; Registra usuario se for primeira interacao
+                        (try! (register-user sender))
+                        ;; Se empate, nao faz nada
+                        (if (is-eq sender-points opponent-points)
+                            (ok true)
+                            (begin
+                                ;; Determina vencedor e perdedor
+                                (let ((winner (if (> sender-points opponent-points) sender opponent))
+                                      (loser (if (> sender-points opponent-points) opponent sender)))
+                                    (begin
+                                        ;; Vencedor ganha +amount, perdedor perde -amount
+                                        (map-set points winner (+ (match (map-get? points winner) pts pts u0) amount))
+                                        (let ((loser-current (match (map-get? points loser) pts pts u0)))
+                                            (if (>= loser-current amount)
+                                                (map-set points loser (- loser-current amount))
+                                                (map-set points loser u0)
+                                            )
+                                        )
+                                        (ok true)
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
             )
         )
     )
