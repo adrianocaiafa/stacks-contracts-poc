@@ -98,7 +98,40 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna os pontos do usuario atual
+(define-read-only (my-points)
+    (ok (match (map-get? points tx-sender) pts pts u0))
+)
+
+;; @notice Retorna quantas vezes voce interagiu com este contrato
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count count u0))
+)
+
+;; @notice Retorna o total de usuarios unicos
+(define-read-only (get-total-unique-users)
+    (ok (var-get total-unique-users))
+)
+
+;; @notice Retorna se um usuario ja interagiu com o contrato
+(define-read-only (has-user-interacted (user principal))
+    (ok (match (map-get? has-interacted user) interacted interacted false))
+)
+
+;; @notice Retorna o contador de interacoes de um usuario especifico
+(define-read-only (get-interactions-count (user principal))
+    (ok (match (map-get? interactions-count user) count count u0))
+)
+
+;; @notice Retorna os pontos de um usuario especifico
+(define-read-only (get-points (user principal))
+    (ok (match (map-get? points user) pts pts u0))
+)
+
+;; @notice Retorna o numero de participantes
+(define-read-only (get-participants-count)
+    (ok (var-get participants-count))
+)
 
 ;; private functions
 ;; @notice Registra um usuario (adiciona a lista de participantes se for primeira vez)
