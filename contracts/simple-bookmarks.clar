@@ -53,6 +53,32 @@
     )
 )
 
+;; @notice Limpa seu bookmark atual
+(define-public (clear-bookmark)
+    (let ((sender tx-sender))
+        (begin
+            ;; Conta usuario unico se for a primeira interacao
+            (match (map-get? has-interacted sender) already-interacted
+                true
+                (begin
+                    (map-set has-interacted sender true)
+                    (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                )
+            )
+            ;; Incrementa contador de interacoes
+            (let ((current-count (match (map-get? interactions-count sender) count
+                count
+                u0
+            )))
+                (map-set interactions-count sender (+ current-count u1))
+            )
+            ;; Remove o bookmark
+            (map-delete bookmark sender)
+            (ok true)
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
