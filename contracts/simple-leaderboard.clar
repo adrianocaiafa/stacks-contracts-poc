@@ -40,7 +40,27 @@
         (let ((sender tx-sender))
             (begin
                 ;; Registra usuario se for primeira interacao
-                (try! (register-user sender))
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                        ;; Adiciona a lista de participantes
+                        (let ((next-index (var-get participants-count)))
+                            (begin
+                                (map-set participants next-index sender)
+                                (var-set participants-count (+ next-index u1))
+                            )
+                        )
+                    )
+                )
+                ;; Incrementa contador de interacoes
+                (let ((current-count (match (map-get? interactions-count sender) count
+                    count
+                    u0
+                )))
+                    (map-set interactions-count sender (+ current-count u1))
+                )
                 ;; Adiciona pontos
                 (let ((current-points (match (map-get? points sender) pts
                     pts
@@ -68,7 +88,27 @@
                         (asserts! (>= sender-points amount) (err u4))
                         (asserts! (>= opponent-points amount) (err u5))
                         ;; Registra usuario se for primeira interacao
-                        (try! (register-user sender))
+                        (match (map-get? has-interacted sender) already-interacted
+                            true
+                            (begin
+                                (map-set has-interacted sender true)
+                                (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                                ;; Adiciona a lista de participantes
+                                (let ((next-index (var-get participants-count)))
+                                    (begin
+                                        (map-set participants next-index sender)
+                                        (var-set participants-count (+ next-index u1))
+                                    )
+                                )
+                            )
+                        )
+                        ;; Incrementa contador de interacoes
+                        (let ((current-count (match (map-get? interactions-count sender) count
+                            count
+                            u0
+                        )))
+                            (map-set interactions-count sender (+ current-count u1))
+                        )
                         ;; Se empate, nao faz nada
                         (if (is-eq sender-points opponent-points)
                             (ok true)
