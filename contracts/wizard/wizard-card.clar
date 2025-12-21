@@ -78,7 +78,7 @@
         (let ((sender tx-sender))
             (begin
                 ;; Verifica se o sender e o dono do NFT
-                (let ((owner (unwrap! (map-get owners token-id) (err u3))))
+                (let ((owner (unwrap! (map-get? owners token-id) (err u3))))
                     (asserts! (is-eq sender owner) (err u4))
                     ;; Transfere o NFT
                     (begin
