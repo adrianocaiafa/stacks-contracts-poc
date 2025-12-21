@@ -50,6 +50,50 @@
     )
 )
 
+;; @notice Minta um NFT para o usuario atual (maximo 2 por usuario)
+(define-public (mint)
+    (let ((sender tx-sender))
+        (begin
+            ;; Registra interacao
+            (match (map-get? has-interacted sender) already-interacted
+                true
+                (begin
+                    (map-set has-interacted sender true)
+                    (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                )
+            )
+            (let ((current-count (match (map-get? interactions-count sender) count count u0)))
+                (map-set interactions-count sender (+ current-count u1))
+            )
+            ;; Verifica se supply foi definido
+            (match (var-get max-supply) max-supply-value
+                (begin
+                    ;; Verifica se ainda ha supply disponivel
+                    (let ((current-supply (var-get token-counter)))
+                        (asserts! (< current-supply max-supply-value) (err u3))
+                        ;; Verifica limite por usuario
+                        (let ((user-minted (match (map-get? minted-count sender) count count u0)))
+                            (begin
+                                (asserts! (< user-minted MAX_MINT_PER_USER) (err u4))
+                                ;; Minta o NFT
+                                (let ((new-token-id (var-get token-counter)))
+                                    (begin
+                                        (map-set owners new-token-id sender)
+                                        (map-set minted-count sender (+ user-minted u1))
+                                        (var-set token-counter (+ new-token-id u1))
+                                        (ok true)
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+                (err u5)
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
