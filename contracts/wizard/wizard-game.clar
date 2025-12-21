@@ -215,7 +215,60 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna o XP do wizard atual
+(define-read-only (my-xp)
+    (ok (match (map-get? xp tx-sender) xp-value xp-value u0))
+)
+
+;; @notice Retorna o nivel do wizard atual
+(define-read-only (my-level)
+    (ok (match (map-get? level tx-sender) level-value level-value u0))
+)
+
+;; @notice Retorna quantos feiticos o wizard atual lancou
+(define-read-only (my-spells-cast)
+    (ok (match (map-get? spells-cast tx-sender) spells spells u0))
+)
+
+;; @notice Retorna quantas vezes voce interagiu com este contrato
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count count u0))
+)
+
+;; @notice Retorna o XP de um wizard especifico
+(define-read-only (get-xp (user principal))
+    (ok (match (map-get? xp user) xp-value xp-value u0))
+)
+
+;; @notice Retorna o nivel de um wizard especifico
+(define-read-only (get-level (user principal))
+    (ok (match (map-get? level user) level-value level-value u0))
+)
+
+;; @notice Retorna quantos feiticos um wizard lancou
+(define-read-only (get-spells-cast (user principal))
+    (ok (match (map-get? spells-cast user) spells spells u0))
+)
+
+;; @notice Retorna o total de wizards unicos
+(define-read-only (get-total-unique-wizards)
+    (ok (var-get total-unique-wizards))
+)
+
+;; @notice Retorna se um usuario ja interagiu
+(define-read-only (has-user-interacted (user principal))
+    (ok (match (map-get? has-interacted user) interacted interacted false))
+)
+
+;; @notice Retorna o contador de interacoes de um usuario
+(define-read-only (get-interactions-count (user principal))
+    (ok (match (map-get? interactions-count user) count count u0))
+)
+
+;; @notice Retorna MANA pendente do usuario atual
+(define-read-only (my-pending-mana)
+    (ok (match (map-get? pending-mana tx-sender) pending pending u0))
+)
 
 ;; private functions
 ;; @notice Registra um wizard (adiciona a lista se for primeira vez)
