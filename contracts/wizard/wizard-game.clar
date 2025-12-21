@@ -108,6 +108,7 @@
 )
 
 ;; @notice Gasta MANA para ganhar XP diretamente
+;; @dev Usuario deve transferir MANA para este contrato antes de chamar esta funcao
 (define-public (spend-mana-for-xp (mana-amount uint))
     (begin
         (asserts! (>= mana-amount MIN_MANA_SPEND) (err u8))
@@ -120,18 +121,20 @@
                 ;; Verifica se token contract foi definido
                 (match (var-get wizard-token-contract) token-contract
                     (begin
-                        ;; Transfere MANA do usuario para o contrato
-                        (try! (contract-call? token-contract transfer (as-contract tx-sender) mana-amount))
-                        ;; Converte MANA para XP (1 MANA = 1 XP, considerando decimais)
-                        (let ((gained-xp (/ (* mana-amount MANA_TO_XP_RATE) u1000000)))
-                            (begin
-                                ;; Adiciona XP
-                                (let ((current-xp (match (map-get? xp sender) xp-value xp-value u0)))
-                                    (map-set xp sender (+ current-xp gained-xp))
+                        ;; Verifica se o contrato tem saldo suficiente (usuario transferiu antes)
+                        (let ((contract-balance (unwrap! (contract-call? token-contract get-balance-of (as-contract tx-sender)) (err u14))))
+                            (asserts! (>= contract-balance mana-amount) (err u15))
+                            ;; Converte MANA para XP (1 MANA = 1 XP, considerando 6 decimais)
+                            (let ((gained-xp (/ (* mana-amount MANA_TO_XP_RATE) u1000000)))
+                                (begin
+                                    ;; Adiciona XP
+                                    (let ((current-xp (match (map-get? xp sender) xp-value xp-value u0)))
+                                        (map-set xp sender (+ current-xp gained-xp))
+                                    )
+                                    ;; Verifica level up
+                                    (try! (handle-level-up sender))
+                                    (ok true)
                                 )
-                                ;; Verifica level up
-                                (try! (handle-level-up sender))
-                                (ok true)
                             )
                         )
                     )
@@ -143,6 +146,7 @@
 )
 
 ;; @notice Lanca um feitico em outro wizard
+;; @dev Usuario deve transferir MANA para este contrato antes de chamar esta funcao
 (define-public (cast-spell (target principal) (mana-amount uint))
     (begin
         (asserts! (is-some (some target)) (err u10))
@@ -158,22 +162,24 @@
                 ;; Verifica se token contract foi definido
                 (match (var-get wizard-token-contract) token-contract
                     (begin
-                        ;; Transfere MANA do usuario para o contrato
-                        (try! (contract-call? token-contract transfer (as-contract tx-sender) mana-amount))
-                        ;; Converte MANA para XP
-                        (let ((gained-xp (/ (* mana-amount MANA_TO_XP_RATE) u1000000)))
-                            (begin
-                                ;; Adiciona XP ao sender
-                                (let ((current-xp (match (map-get? xp sender) xp-value xp-value u0)))
-                                    (map-set xp sender (+ current-xp gained-xp))
+                        ;; Verifica se o contrato tem saldo suficiente (usuario transferiu antes)
+                        (let ((contract-balance (unwrap! (contract-call? token-contract get-balance-of (as-contract tx-sender)) (err u16))))
+                            (asserts! (>= contract-balance mana-amount) (err u17))
+                            ;; Converte MANA para XP
+                            (let ((gained-xp (/ (* mana-amount MANA_TO_XP_RATE) u1000000)))
+                                (begin
+                                    ;; Adiciona XP ao sender
+                                    (let ((current-xp (match (map-get? xp sender) xp-value xp-value u0)))
+                                        (map-set xp sender (+ current-xp gained-xp))
+                                    )
+                                    ;; Incrementa contador de feiticos
+                                    (let ((current-spells (match (map-get? spells-cast sender) spells spells u0)))
+                                        (map-set spells-cast sender (+ current-spells u1))
+                                    )
+                                    ;; Verifica level up
+                                    (try! (handle-level-up sender))
+                                    (ok true)
                                 )
-                                ;; Incrementa contador de feiticos
-                                (let ((current-spells (match (map-get? spells-cast sender) spells spells u0)))
-                                    (map-set spells-cast sender (+ current-spells u1))
-                                )
-                                ;; Verifica level up
-                                (try! (handle-level-up sender))
-                                (ok true)
                             )
                         )
                     )
