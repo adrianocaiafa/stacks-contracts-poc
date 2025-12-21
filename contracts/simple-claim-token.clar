@@ -26,7 +26,15 @@
 ;; Supply total de tokens (total cunhado via claims)
 (define-data-var total-supply uint u0)
 
+;; Total de usuarios unicos que interagiram com o contrato
+(define-data-var total-unique-users uint u0)
+
 ;; data maps
+;; Indica se um endereco ja interagiu com o contrato
+(define-map has-interacted principal bool)
+
+;; Contador de interacoes por usuario
+(define-map interactions-count principal uint)
 ;; Balanco de tokens de cada usuario
 (define-map balances principal uint)
 
