@@ -42,7 +42,35 @@
 (define-map has-claimed principal bool)
 
 ;; public functions
-;;
+;; @notice Permite que cada usuario reivindique uma quantidade fixa de tokens uma vez
+(define-public (claim)
+    (let ((sender tx-sender))
+        (begin
+            ;; Valida que o usuario ainda nao fez claim
+            (asserts! (not (match (map-get? has-claimed sender) claimed claimed false)) (err u1))
+            ;; Registra interacao
+            (match (map-get? has-interacted sender) already-interacted
+                true
+                (begin
+                    (map-set has-interacted sender true)
+                    (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                )
+            )
+            (let ((current-count (match (map-get? interactions-count sender) count count u0)))
+                (map-set interactions-count sender (+ current-count u1))
+            )
+            ;; Marca como claimed
+            (map-set has-claimed sender true)
+            ;; Cunha os tokens
+            (let ((receiver-balance (match (map-get? balances sender) bal bal u0)))
+                (map-set balances sender (+ receiver-balance CLAIM_AMOUNT))
+            )
+            ;; Atualiza supply total
+            (var-set total-supply (+ (var-get total-supply) CLAIM_AMOUNT))
+            (ok true)
+        )
+    )
+)
 
 ;; read only functions
 ;;
