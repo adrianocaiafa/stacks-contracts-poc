@@ -39,7 +39,16 @@
 (define-map minted-count principal uint)
 
 ;; public functions
-;;
+;; @notice Define o supply maximo de NFTs (apenas owner)
+(define-public (set-supply (supply uint))
+    (begin
+        (asserts! (is-eq tx-sender (var-get contract-owner)) (err u1))
+        (asserts! (> supply u0) (err u2))
+        ;; Verifica se ainda nao foi definido ou permite redefinir
+        (var-set max-supply (some supply))
+        (ok true)
+    )
+)
 
 ;; read only functions
 ;;
