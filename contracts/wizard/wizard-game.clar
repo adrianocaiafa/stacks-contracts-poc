@@ -120,15 +120,11 @@
                 ;; Verifica se token contract foi definido
                 (match (var-get wizard-token-contract) token-contract
                     (begin
-                        ;; Verifica se o contrato tem saldo suficiente
-                        (let ((contract-balance (unwrap! (contract-call? token-contract get-balance-of (as-contract tx-sender)) (err u14))))
-                            (asserts! (>= contract-balance mana-amount) (err u15))
-                            ;; Registra MANA pendente
-                            (let ((current-pending (match (map-get? pending-mana sender) pending pending u0)))
-                                (map-set pending-mana sender (+ current-pending mana-amount))
-                            )
-                            (ok true)
+                        ;; Registra MANA pendente (confia que usuario transferiu)
+                        (let ((current-pending (match (map-get? pending-mana sender) pending pending u0)))
+                            (map-set pending-mana sender (+ current-pending mana-amount))
                         )
+                        (ok true)
                     )
                     (err u9)
                 )
