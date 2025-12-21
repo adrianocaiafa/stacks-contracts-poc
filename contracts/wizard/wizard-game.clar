@@ -107,8 +107,145 @@
     )
 )
 
+;; @notice Gasta MANA para ganhar XP diretamente
+(define-public (spend-mana-for-xp (mana-amount uint))
+    (begin
+        (asserts! (>= mana-amount MIN_MANA_SPEND) (err u8))
+        (let ((sender tx-sender))
+            (begin
+                ;; Verifica NFT se necessario
+                (try! (check-nft sender))
+                ;; Registra wizard
+                (try! (register-wizard sender))
+                ;; Verifica se token contract foi definido
+                (match (var-get wizard-token-contract) token-contract
+                    (begin
+                        ;; Transfere MANA do usuario para o contrato
+                        (try! (contract-call? token-contract transfer (as-contract tx-sender) mana-amount))
+                        ;; Converte MANA para XP (1 MANA = 1 XP, considerando decimais)
+                        (let ((gained-xp (/ (* mana-amount MANA_TO_XP_RATE) u1000000)))
+                            (begin
+                                ;; Adiciona XP
+                                (let ((current-xp (match (map-get? xp sender) xp-value xp-value u0)))
+                                    (map-set xp sender (+ current-xp gained-xp))
+                                )
+                                ;; Verifica level up
+                                (try! (handle-level-up sender))
+                                (ok true)
+                            )
+                        )
+                    )
+                    (err u9)
+                )
+            )
+        )
+    )
+)
+
+;; @notice Lanca um feitico em outro wizard
+(define-public (cast-spell (target principal) (mana-amount uint))
+    (begin
+        (asserts! (is-some (some target)) (err u10))
+        (asserts! (not (is-eq target tx-sender)) (err u11))
+        (asserts! (>= mana-amount MIN_MANA_SPEND) (err u12))
+        (let ((sender tx-sender))
+            (begin
+                ;; Verifica NFT se necessario
+                (try! (check-nft sender))
+                ;; Registra wizard (sender e target)
+                (try! (register-wizard sender))
+                (try! (register-wizard target))
+                ;; Verifica se token contract foi definido
+                (match (var-get wizard-token-contract) token-contract
+                    (begin
+                        ;; Transfere MANA do usuario para o contrato
+                        (try! (contract-call? token-contract transfer (as-contract tx-sender) mana-amount))
+                        ;; Converte MANA para XP
+                        (let ((gained-xp (/ (* mana-amount MANA_TO_XP_RATE) u1000000)))
+                            (begin
+                                ;; Adiciona XP ao sender
+                                (let ((current-xp (match (map-get? xp sender) xp-value xp-value u0)))
+                                    (map-set xp sender (+ current-xp gained-xp))
+                                )
+                                ;; Incrementa contador de feiticos
+                                (let ((current-spells (match (map-get? spells-cast sender) spells spells u0)))
+                                    (map-set spells-cast sender (+ current-spells u1))
+                                )
+                                ;; Verifica level up
+                                (try! (handle-level-up sender))
+                                (ok true)
+                            )
+                        )
+                    )
+                    (err u13)
+                )
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
 ;; private functions
-;;
+;; @notice Registra um wizard (adiciona a lista se for primeira vez)
+(define-private (register-wizard (user principal))
+    (begin
+        ;; Se e a primeira interacao, adiciona a lista de wizards
+        (match (map-get? has-interacted user) already-interacted
+            true
+            (begin
+                (map-set has-interacted user true)
+                (var-set total-unique-wizards (+ (var-get total-unique-wizards) u1))
+                ;; Adiciona a lista de wizards
+                (let ((next-index (var-get wizards-count)))
+                    (begin
+                        (map-set wizards next-index user)
+                        (var-set wizards-count (+ next-index u1))
+                    )
+                )
+            )
+        )
+        ;; Incrementa contador de interacoes
+        (let ((current-count (match (map-get? interactions-count user) count
+            count
+            u0
+        )))
+            (map-set interactions-count user (+ current-count u1))
+        )
+        (ok true)
+    )
+)
+
+;; @notice Verifica se usuario tem NFT (se necessario)
+(define-private (check-nft (user principal))
+    (begin
+        (if (var-get nft-required-for-actions)
+            (match (var-get wizard-card-contract) nft-contract
+                (begin
+                    ;; Verifica se usuario tem pelo menos 1 NFT
+                    ;; Nota: Em Clarity, precisariamos de um trait para verificar balance do NFT
+                    ;; Por enquanto, vamos apenas validar que o contrato foi definido
+                    (ok true)
+                )
+                (err u7)
+            )
+            (ok true)
+        )
+    )
+)
+
+;; @notice Verifica e atualiza nivel do wizard baseado no XP
+(define-private (handle-level-up (user principal))
+    (begin
+        (let ((user-xp (match (map-get? xp user) xp-value xp-value u0))
+              (user-level (match (map-get? level user) level-value level-value u0))
+              (new-level (/ user-xp XP_PER_LEVEL)))
+            (if (> new-level user-level)
+                (map-set level user new-level)
+                true
+            )
+        )
+        (ok true)
+    )
+)
