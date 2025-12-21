@@ -23,7 +23,15 @@
 ;; Contador de tokens mintados (para gerar IDs)
 (define-data-var token-counter uint u0)
 
+;; Total de usuarios unicos que interagiram com o contrato
+(define-data-var total-unique-users uint u0)
+
 ;; data maps
+;; Indica se um endereco ja interagiu com o contrato
+(define-map has-interacted principal bool)
+
+;; Contador de interacoes por usuario
+(define-map interactions-count principal uint)
 ;; Proprietario de cada NFT (token-id -> principal)
 (define-map owners uint principal)
 
