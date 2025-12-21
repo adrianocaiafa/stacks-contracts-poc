@@ -71,6 +71,37 @@
     )
 )
 
+;; @notice Transfere um NFT para outro usuario
+(define-public (transfer (token-id uint) (to principal))
+    (begin
+        (asserts! (is-some (some to)) (err u2))
+        (let ((sender tx-sender))
+            (begin
+                ;; Verifica se o sender e o dono do NFT
+                (let ((owner (unwrap! (map-get owners token-id) (err u3))))
+                    (asserts! (is-eq sender owner) (err u4))
+                    ;; Transfere o NFT
+                    (begin
+                        (map-set owners token-id to)
+                        ;; Registra interacao
+                        (match (map-get? has-interacted sender) already-interacted
+                            true
+                            (begin
+                                (map-set has-interacted sender true)
+                                (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                            )
+                        )
+                        (let ((current-count (match (map-get? interactions-count sender) count count u0)))
+                            (map-set interactions-count sender (+ current-count u1))
+                        )
+                        (ok true)
+                    )
+                )
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
