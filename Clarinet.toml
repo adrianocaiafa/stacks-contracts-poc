@@ -81,7 +81,7 @@ clarity_version = 4
 epoch = 'latest'
 
 [contracts.wizard-token]
-path = 'contracts/wizard-token.clar'
+path = 'contracts/wizard/wizard-token.clar'
 clarity_version = 4
 epoch = 'latest'
 [repl.analysis]
