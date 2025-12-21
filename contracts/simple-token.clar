@@ -71,6 +71,35 @@
     )
 )
 
+;; @notice Cunha novos tokens para um endereco
+(define-public (mint (to principal) (amount uint))
+    (begin
+        (asserts! (> amount u0) (err u3))
+        (let ((sender tx-sender))
+            (begin
+                ;; Registra interacao
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                    )
+                )
+                (let ((current-count (match (map-get? interactions-count sender) count count u0)))
+                    (map-set interactions-count sender (+ current-count u1))
+                )
+                ;; Cunha tokens
+                (let ((receiver-balance (match (map-get? balances to) bal bal u0)))
+                    (map-set balances to (+ receiver-balance amount))
+                )
+                ;; Atualiza supply total
+                (var-set total-supply (+ (var-get total-supply) amount))
+                (ok true)
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
