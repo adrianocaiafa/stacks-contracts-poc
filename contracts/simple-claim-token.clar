@@ -107,7 +107,50 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna o balanco de tokens do usuario atual
+(define-read-only (get-balance)
+    (ok (match (map-get? balances tx-sender) bal bal u0))
+)
+
+;; @notice Retorna o balanco de tokens de um usuario especifico
+(define-read-only (get-balance-of (user principal))
+    (ok (match (map-get? balances user) bal bal u0))
+)
+
+;; @notice Retorna o supply total de tokens
+(define-read-only (get-total-supply)
+    (ok (var-get total-supply))
+)
+
+;; @notice Retorna o nome do token
+(define-read-only (get-name)
+    (ok TOKEN_NAME)
+)
+
+;; @notice Retorna o simbolo do token
+(define-read-only (get-symbol)
+    (ok TOKEN_SYMBOL)
+)
+
+;; @notice Retorna os decimais do token
+(define-read-only (get-decimals)
+    (ok TOKEN_DECIMALS)
+)
+
+;; @notice Retorna se o usuario atual ja fez claim
+(define-read-only (has-claimed)
+    (ok (match (map-get? has-claimed tx-sender) claimed claimed false))
+)
+
+;; @notice Retorna se um usuario especifico ja fez claim
+(define-read-only (has-user-claimed (user principal))
+    (ok (match (map-get? has-claimed user) claimed claimed false))
+)
+
+;; @notice Retorna a quantidade de tokens do claim
+(define-read-only (get-claim-amount)
+    (ok CLAIM_AMOUNT)
+)
 
 ;; private functions
 ;;
