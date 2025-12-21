@@ -40,7 +40,36 @@
 (define-map has-minted principal bool)
 
 ;; public functions
-;;
+;; @notice Minta um wizard card NFT (um por wallet)
+(define-public (mint)
+    (let ((sender tx-sender))
+        (begin
+            ;; Verifica se usuario ja mintou
+            (asserts! (not (match (map-get? has-minted sender) minted minted false)) (err u1))
+            ;; Registra interacao
+            (match (map-get? has-interacted sender) already-interacted
+                true
+                (begin
+                    (map-set has-interacted sender true)
+                    (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                )
+            )
+            (let ((current-count (match (map-get? interactions-count sender) count count u0)))
+                (map-set interactions-count sender (+ current-count u1))
+            )
+            ;; Obtem o proximo token ID
+            (let ((token-id (var-get token-counter)))
+                (begin
+                    ;; Minta o NFT
+                    (map-set owners token-id sender)
+                    (map-set has-minted sender true)
+                    (var-set token-counter (+ token-id u1))
+                    (ok token-id)
+                )
+            )
+        )
+    )
+)
 
 ;; read only functions
 ;;
