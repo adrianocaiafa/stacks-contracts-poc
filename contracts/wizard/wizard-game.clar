@@ -138,8 +138,23 @@
             (begin
                 ;; Verifica NFT se necessario
                 (try! (check-nft sender))
-                ;; Registra wizard
-                (try! (register-wizard sender))
+                ;; Registra wizard inline
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-wizards (+ (var-get total-unique-wizards) u1))
+                        (let ((next-index (var-get wizards-count)))
+                            (begin
+                                (map-set wizards next-index sender)
+                                (var-set wizards-count (+ next-index u1))
+                            )
+                        )
+                    )
+                )
+                (let ((current-count (match (map-get? interactions-count sender) count count u0)))
+                    (map-set interactions-count sender (+ current-count u1))
+                )
                 ;; Verifica se tem MANA pendente suficiente
                 (let ((pending (match (map-get? pending-mana sender) pending pending u0)))
                     (begin
@@ -153,8 +168,15 @@
                                 (let ((current-xp (match (map-get? xp sender) xp-value xp-value u0)))
                                     (map-set xp sender (+ current-xp gained-xp))
                                 )
-                                ;; Verifica level up
-                                (try! (handle-level-up sender))
+                                ;; Verifica level up inline
+                                (let ((user-xp (match (map-get? xp sender) xp-value xp-value u0))
+                                      (user-level (match (map-get? level sender) level-value level-value u0))
+                                      (new-level (/ user-xp XP_PER_LEVEL)))
+                                    (if (> new-level user-level)
+                                        (map-set level sender new-level)
+                                        true
+                                    )
+                                )
                                 (ok true)
                             )
                         )
@@ -175,9 +197,37 @@
             (begin
                 ;; Verifica NFT se necessario
                 (try! (check-nft sender))
-                ;; Registra wizard (sender e target)
-                (try! (register-wizard sender))
-                (try! (register-wizard target))
+                ;; Registra wizard sender inline
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-wizards (+ (var-get total-unique-wizards) u1))
+                        (let ((next-index (var-get wizards-count)))
+                            (begin
+                                (map-set wizards next-index sender)
+                                (var-set wizards-count (+ next-index u1))
+                            )
+                        )
+                    )
+                )
+                (let ((current-count (match (map-get? interactions-count sender) count count u0)))
+                    (map-set interactions-count sender (+ current-count u1))
+                )
+                ;; Registra wizard target inline
+                (match (map-get? has-interacted target) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted target true)
+                        (var-set total-unique-wizards (+ (var-get total-unique-wizards) u1))
+                        (let ((next-index (var-get wizards-count)))
+                            (begin
+                                (map-set wizards next-index target)
+                                (var-set wizards-count (+ next-index u1))
+                            )
+                        )
+                    )
+                )
                 ;; Verifica se tem MANA pendente suficiente
                 (let ((pending (match (map-get? pending-mana sender) pending pending u0)))
                     (begin
@@ -195,8 +245,15 @@
                                 (let ((current-spells (match (map-get? spells-cast sender) spells spells u0)))
                                     (map-set spells-cast sender (+ current-spells u1))
                                 )
-                                ;; Verifica level up
-                                (try! (handle-level-up sender))
+                                ;; Verifica level up inline
+                                (let ((user-xp (match (map-get? xp sender) xp-value xp-value u0))
+                                      (user-level (match (map-get? level sender) level-value level-value u0))
+                                      (new-level (/ user-xp XP_PER_LEVEL)))
+                                    (if (> new-level user-level)
+                                        (map-set level sender new-level)
+                                        true
+                                    )
+                                )
                                 (ok true)
                             )
                         )
