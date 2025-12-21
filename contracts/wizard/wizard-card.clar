@@ -103,7 +103,55 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna o dono de um NFT
+(define-read-only (get-owner (token-id uint))
+    (ok (map-get? owners token-id))
+)
+
+;; @notice Retorna o nome do token
+(define-read-only (get-name)
+    (ok TOKEN_NAME)
+)
+
+;; @notice Retorna o simbolo do token
+(define-read-only (get-symbol)
+    (ok TOKEN_SYMBOL)
+)
+
+;; @notice Retorna se o usuario atual ja mintou
+(define-read-only (my-has-minted)
+    (ok (match (map-get? has-minted tx-sender) minted minted false))
+)
+
+;; @notice Retorna se um usuario especifico ja mintou
+(define-read-only (has-user-minted (user principal))
+    (ok (match (map-get? has-minted user) minted minted false))
+)
+
+;; @notice Retorna quantas vezes voce interagiu com este contrato
+(define-read-only (my-interactions)
+    (ok (match (map-get? interactions-count tx-sender) count count u0))
+)
+
+;; @notice Retorna o total de usuarios unicos
+(define-read-only (get-total-unique-users)
+    (ok (var-get total-unique-users))
+)
+
+;; @notice Retorna se um usuario ja interagiu com o contrato
+(define-read-only (has-user-interacted (user principal))
+    (ok (match (map-get? has-interacted user) interacted interacted false))
+)
+
+;; @notice Retorna o contador de interacoes de um usuario especifico
+(define-read-only (get-interactions-count (user principal))
+    (ok (match (map-get? interactions-count user) count count u0))
+)
+
+;; @notice Retorna o proximo token ID que sera mintado
+(define-read-only (get-next-token-id)
+    (ok (var-get token-counter))
+)
 
 ;; private functions
 ;;
