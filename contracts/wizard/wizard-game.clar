@@ -270,6 +270,40 @@
     (ok (match (map-get? pending-mana tx-sender) pending pending u0))
 )
 
+;; @notice Retorna o numero de wizards
+(define-read-only (get-wizards-count)
+    (ok (var-get wizards-count))
+)
+
+;; @notice Retorna um wizard pelo indice
+(define-read-only (get-wizard (index uint))
+    (ok (map-get? wizards index))
+)
+
+;; @notice Retorna wizard com XP e nivel por indice (para leaderboard)
+(define-read-only (get-wizard-with-stats (index uint))
+    (match (map-get? wizards index) wizard
+        (ok (some {
+            user: wizard,
+            xp: (match (map-get? xp wizard) xp-value xp-value u0),
+            level: (match (map-get? level wizard) level-value level-value u0),
+            spells-cast: (match (map-get? spells-cast wizard) spells spells u0)
+        }))
+        (ok none)
+    )
+)
+
+;; @notice Retorna informacoes do contrato
+(define-read-only (get-contract-info)
+    (ok {
+        owner: (var-get contract-owner),
+        wizard-token: (var-get wizard-token-contract),
+        wizard-card: (var-get wizard-card-contract),
+        nft-required: (var-get nft-required-for-actions),
+        total-wizards: (var-get total-unique-wizards)
+    })
+)
+
 ;; private functions
 ;; @notice Registra um wizard (adiciona a lista se for primeira vez)
 (define-private (register-wizard (user principal))
