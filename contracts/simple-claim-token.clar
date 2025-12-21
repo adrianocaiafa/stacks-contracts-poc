@@ -138,7 +138,7 @@
 )
 
 ;; @notice Retorna se o usuario atual ja fez claim
-(define-read-only (has-claimed)
+(define-read-only (my-has-claimed)
     (ok (match (map-get? has-claimed tx-sender) claimed claimed false))
 )
 

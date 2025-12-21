@@ -30,10 +30,10 @@ describe("simple-claim-token tests", () => {
     expect(result).toBeUint(0);
   });
 
-  it("should return false for has-claimed initially", () => {
+  it("should return false for my-has-claimed initially", () => {
     const { result } = simnet.callReadOnlyFn(
       "simple-claim-token",
-      "has-claimed",
+      "my-has-claimed",
       [],
       address1
     );
@@ -124,7 +124,7 @@ describe("simple-claim-token tests", () => {
     
     const { result } = simnet.callReadOnlyFn(
       "simple-claim-token",
-      "has-claimed",
+      "my-has-claimed",
       [],
       address1
     );
