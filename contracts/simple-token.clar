@@ -10,10 +10,18 @@
 ;;
 
 ;; constants
-;;
+;; Nome do token
+(define-constant TOKEN_NAME "Simple Token")
+
+;; Simbolo do token
+(define-constant TOKEN_SYMBOL "STK")
+
+;; Decimais do token
+(define-constant TOKEN_DECIMALS u6)
 
 ;; data vars
-;;
+;; Supply total de tokens (total cunhado)
+(define-data-var total-supply uint u0)
 
 ;; data maps
 ;; Balanco de tokens de cada usuario
