@@ -100,6 +100,39 @@
     )
 )
 
+;; @notice Queima tokens do endereco atual
+(define-public (burn (amount uint))
+    (begin
+        (asserts! (> amount u0) (err u4))
+        (let ((sender tx-sender))
+            (begin
+                ;; Registra interacao
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                    )
+                )
+                (let ((current-count (match (map-get? interactions-count sender) count count u0)))
+                    (map-set interactions-count sender (+ current-count u1))
+                )
+                ;; Verifica se tem saldo suficiente
+                (let ((sender-balance (match (map-get? balances sender) bal bal u0)))
+                    (begin
+                        (asserts! (>= sender-balance amount) (err u5))
+                        ;; Queima tokens
+                        (map-set balances sender (- sender-balance amount))
+                        ;; Atualiza supply total
+                        (var-set total-supply (- (var-get total-supply) amount))
+                        (ok true)
+                    )
+                )
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
