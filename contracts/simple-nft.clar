@@ -126,7 +126,35 @@
 )
 
 ;; read only functions
-;;
+;; @notice Retorna o dono de um NFT
+(define-read-only (get-owner (token-id uint))
+    (ok (map-get? owners token-id))
+)
+
+;; @notice Retorna quantos NFTs um usuario mintou
+(define-read-only (get-minted-count (user principal))
+    (ok (match (map-get? minted-count user) count count u0))
+)
+
+;; @notice Retorna quantos NFTs o usuario atual mintou
+(define-read-only (my-minted-count)
+    (ok (match (map-get? minted-count tx-sender) count count u0))
+)
+
+;; @notice Retorna o supply maximo definido
+(define-read-only (get-max-supply)
+    (ok (var-get max-supply))
+)
+
+;; @notice Retorna o contador atual de tokens mintados
+(define-read-only (get-token-counter)
+    (ok (var-get token-counter))
+)
+
+;; @notice Retorna o owner do contrato
+(define-read-only (get-contract-owner)
+    (ok (var-get contract-owner))
+)
 
 ;; private functions
 ;;
