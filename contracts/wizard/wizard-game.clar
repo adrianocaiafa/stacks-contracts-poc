@@ -64,7 +64,48 @@
 (define-map wizards uint principal)
 
 ;; public functions
-;;
+;; @notice Define o contrato do wizard-token (apenas owner)
+(define-public (set-wizard-token (token-contract principal))
+    (begin
+        (asserts! (is-eq tx-sender (var-get contract-owner)) (err u1))
+        (var-set wizard-token-contract (some token-contract))
+        (ok true)
+    )
+)
+
+;; @notice Define o contrato do wizard-card NFT (apenas owner)
+(define-public (set-wizard-card (nft-contract principal))
+    (begin
+        (asserts! (is-eq tx-sender (var-get contract-owner)) (err u2))
+        (var-set wizard-card-contract (some nft-contract))
+        (ok true)
+    )
+)
+
+;; @notice Define se NFT e necessario para acoes (apenas owner)
+(define-public (set-nft-required-for-actions (required bool))
+    (begin
+        (asserts! (is-eq tx-sender (var-get contract-owner)) (err u3))
+        (var-set nft-required-for-actions required)
+        (ok true)
+    )
+)
+
+;; @notice Retira MANA acumulado do contrato (apenas owner)
+(define-public (withdraw-mana (to principal) (amount uint))
+    (begin
+        (asserts! (is-eq tx-sender (var-get contract-owner)) (err u4))
+        (asserts! (is-some (some to)) (err u5))
+        (match (var-get wizard-token-contract) token-contract
+            (begin
+                ;; Chama transfer do wizard-token
+                (try! (contract-call? token-contract transfer to amount))
+                (ok true)
+            )
+            (err u6)
+        )
+    )
+)
 
 ;; read only functions
 ;;
