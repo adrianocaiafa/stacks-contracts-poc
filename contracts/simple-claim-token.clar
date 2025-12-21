@@ -72,6 +72,40 @@
     )
 )
 
+;; @notice Transfere tokens de um usuario para outro
+(define-public (transfer (to principal) (amount uint))
+    (begin
+        (asserts! (> amount u0) (err u2))
+        (let ((sender tx-sender))
+            (begin
+                ;; Registra interacao
+                (match (map-get? has-interacted sender) already-interacted
+                    true
+                    (begin
+                        (map-set has-interacted sender true)
+                        (var-set total-unique-users (+ (var-get total-unique-users) u1))
+                    )
+                )
+                (let ((current-count (match (map-get? interactions-count sender) count count u0)))
+                    (map-set interactions-count sender (+ current-count u1))
+                )
+                ;; Verifica se tem saldo suficiente
+                (let ((sender-balance (match (map-get? balances sender) bal bal u0)))
+                    (begin
+                        (asserts! (>= sender-balance amount) (err u3))
+                        ;; Transfere tokens
+                        (map-set balances sender (- sender-balance amount))
+                        (let ((receiver-balance (match (map-get? balances to) bal bal u0)))
+                            (map-set balances to (+ receiver-balance amount))
+                        )
+                        (ok true)
+                    )
+                )
+            )
+        )
+    )
+)
+
 ;; read only functions
 ;;
 
